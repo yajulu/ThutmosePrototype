@@ -1,9 +1,14 @@
 fileFormatVersion: 2
-guid: 629cdcb657dc6cd41a3fe04856dd6795
+guid: 593783e4b3a514179a740ab52f9b060f
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Stone.001
+    second: {fileID: 2100000, guid: 7fbc9532d5a0c4af8a6af2d9736b1b53, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -34,7 +39,7 @@ ModelImporter:
     isReadable: 0
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: 3.2
     meshCompression: 0
     addColliders: 1
     useSRGBMaterialColor: 1
@@ -85,7 +90,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 1
+    globalScale: 3.2
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
