@@ -8,7 +8,10 @@ EditorBuildSettings:
   - enabled: 0
     path: 
     guid: 00000000000000000000000000000000
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Sandboxes/Movement.unity
     guid: b85f462dfa071fc45891e92763d602c8
+  - enabled: 1
+    path: Assets/Scenes/Sandboxes/LightTesting.unity
+    guid: cde082c0a4148594eaa0d23ba6eb5c11
   m_configObjects: {}
