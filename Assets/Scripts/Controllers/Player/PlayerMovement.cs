@@ -10,6 +10,7 @@ public class PlayerMovement : MonoBehaviour
     PlayerInput playerInput;
     CharacterController characterController;
     GameObject trailObject;
+    SlingShotController slingShotController;
 
     #region Movement
     [SerializeField]
@@ -54,6 +55,7 @@ public class PlayerMovement : MonoBehaviour
         playerInput = new PlayerInput();
         characterController = GetComponent<CharacterController>();
         animatorController = GetComponent<Animator>();
+        slingShotController = GetComponent<SlingShotController>();
         trailObject = transform.GetChild(3).gameObject;
         isDodgeAllowed = true;
         InitializeInput();
@@ -74,9 +76,13 @@ public class PlayerMovement : MonoBehaviour
     }
     void Update()
     {
-        Move();
-        Rotate();
-        Animate();
+        if (!slingShotController.isCurrentlyAiming)
+        {
+            Move();
+            Rotate();
+            Animate();
+        }
+     
         
     }
 

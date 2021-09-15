@@ -8,6 +8,7 @@ public class TimeAbilitiesController : MonoBehaviour
 {
     PlayerInput playerInput;
     PlayerMovement playerMovement;
+    SlingShotController slingShotController;
     CharacterController playerController;
     GameObject playerMesh;
     GameObject playerReplica;
@@ -21,6 +22,7 @@ public class TimeAbilitiesController : MonoBehaviour
     {
         playerMovement = GetComponent<PlayerMovement>();
         playerController = GetComponent<CharacterController>();
+        slingShotController = GetComponent<SlingShotController>();
         playerMesh = transform.GetChild(0).gameObject;
         playerReplica = transform.GetChild(2).gameObject;
         playerInput = new PlayerInput();
@@ -46,27 +48,26 @@ public class TimeAbilitiesController : MonoBehaviour
     }
 
 
-    private void Update()
-    {
-        
-    }
-
     void OnAbilityInput(InputAction.CallbackContext context)
     {
-        isCurrentlyRewinding = context.ReadValueAsButton();
-        playerMovement.Stop();
-        playerController.enabled = !isCurrentlyRewinding;
-        playerMesh.SetActive(!isCurrentlyRewinding);
-        playerReplica.SetActive(isCurrentlyRewinding);
-       
-        if (isCurrentlyRewinding)
-           StartCoroutine(ActivateRewind());
-        else
+        if (!slingShotController.isCurrentlyAiming)
         {
-            playerMovement.enabled = true;
-            StartCoroutine(PlayerTracker());
-            trackingList.Clear();
+            isCurrentlyRewinding = context.ReadValueAsButton();
+            playerMovement.Stop();
+            playerController.enabled = !isCurrentlyRewinding;
+            playerMesh.SetActive(!isCurrentlyRewinding);
+            playerReplica.SetActive(isCurrentlyRewinding);
+
+            if (isCurrentlyRewinding)
+                StartCoroutine(ActivateRewind());
+            else
+            {
+                playerMovement.enabled = true;
+                StartCoroutine(PlayerTracker());
+                trackingList.Clear();
+            }
         }
+      
            
     }
 

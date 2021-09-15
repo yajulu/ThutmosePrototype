@@ -49,6 +49,22 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": ""NormalizeVector2"",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Shoot"",
+                    ""type"": ""Button"",
+                    ""id"": ""6f8e6f55-b52c-40b1-8b6b-0bb8dde65057"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": ""NormalizeVector2"",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""d9d67b70-664c-4f81-a121-9c4a2c7a67c6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": ""NormalizeVector2"",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -132,7 +148,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""1c36f24a-6b75-40dd-8909-9a4b7959232f"",
-                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -183,6 +199,50 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                     ""action"": ""Dodge"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2255fe62-a130-4eaf-a17e-84d0ffe25f99"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Shoot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""09844e09-1cbe-44a7-a9d9-f9641b5c0621"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Shoot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a7ddc7a4-8a07-4db2-b9dd-0d1c52a91092"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e2186f63-b7b2-497e-86db-8e1bcf333af0"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -195,6 +255,8 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         m_CharacterActionMap_Run = m_CharacterActionMap.FindAction("Run", throwIfNotFound: true);
         m_CharacterActionMap_TimeAbility = m_CharacterActionMap.FindAction("TimeAbility", throwIfNotFound: true);
         m_CharacterActionMap_Dodge = m_CharacterActionMap.FindAction("Dodge", throwIfNotFound: true);
+        m_CharacterActionMap_Shoot = m_CharacterActionMap.FindAction("Shoot", throwIfNotFound: true);
+        m_CharacterActionMap_Interact = m_CharacterActionMap.FindAction("Interact", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -248,6 +310,8 @@ public class @PlayerInput : IInputActionCollection, IDisposable
     private readonly InputAction m_CharacterActionMap_Run;
     private readonly InputAction m_CharacterActionMap_TimeAbility;
     private readonly InputAction m_CharacterActionMap_Dodge;
+    private readonly InputAction m_CharacterActionMap_Shoot;
+    private readonly InputAction m_CharacterActionMap_Interact;
     public struct CharacterActionMapActions
     {
         private @PlayerInput m_Wrapper;
@@ -256,6 +320,8 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         public InputAction @Run => m_Wrapper.m_CharacterActionMap_Run;
         public InputAction @TimeAbility => m_Wrapper.m_CharacterActionMap_TimeAbility;
         public InputAction @Dodge => m_Wrapper.m_CharacterActionMap_Dodge;
+        public InputAction @Shoot => m_Wrapper.m_CharacterActionMap_Shoot;
+        public InputAction @Interact => m_Wrapper.m_CharacterActionMap_Interact;
         public InputActionMap Get() { return m_Wrapper.m_CharacterActionMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -277,6 +343,12 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                 @Dodge.started -= m_Wrapper.m_CharacterActionMapActionsCallbackInterface.OnDodge;
                 @Dodge.performed -= m_Wrapper.m_CharacterActionMapActionsCallbackInterface.OnDodge;
                 @Dodge.canceled -= m_Wrapper.m_CharacterActionMapActionsCallbackInterface.OnDodge;
+                @Shoot.started -= m_Wrapper.m_CharacterActionMapActionsCallbackInterface.OnShoot;
+                @Shoot.performed -= m_Wrapper.m_CharacterActionMapActionsCallbackInterface.OnShoot;
+                @Shoot.canceled -= m_Wrapper.m_CharacterActionMapActionsCallbackInterface.OnShoot;
+                @Interact.started -= m_Wrapper.m_CharacterActionMapActionsCallbackInterface.OnInteract;
+                @Interact.performed -= m_Wrapper.m_CharacterActionMapActionsCallbackInterface.OnInteract;
+                @Interact.canceled -= m_Wrapper.m_CharacterActionMapActionsCallbackInterface.OnInteract;
             }
             m_Wrapper.m_CharacterActionMapActionsCallbackInterface = instance;
             if (instance != null)
@@ -293,6 +365,12 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                 @Dodge.started += instance.OnDodge;
                 @Dodge.performed += instance.OnDodge;
                 @Dodge.canceled += instance.OnDodge;
+                @Shoot.started += instance.OnShoot;
+                @Shoot.performed += instance.OnShoot;
+                @Shoot.canceled += instance.OnShoot;
+                @Interact.started += instance.OnInteract;
+                @Interact.performed += instance.OnInteract;
+                @Interact.canceled += instance.OnInteract;
             }
         }
     }
@@ -303,5 +381,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         void OnRun(InputAction.CallbackContext context);
         void OnTimeAbility(InputAction.CallbackContext context);
         void OnDodge(InputAction.CallbackContext context);
+        void OnShoot(InputAction.CallbackContext context);
+        void OnInteract(InputAction.CallbackContext context);
     }
 }
