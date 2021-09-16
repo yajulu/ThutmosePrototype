@@ -31,13 +31,13 @@ public class EnemyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("IsPatrolling: " + isPatrolling + " - IsSearching: " + isSearching + " - IsDetecting: " + isDetecting);
+
         if (agent.remainingDistance <= 0 && isPatrolling)
         {
             if (!isSearching)
                 StartCoroutine(EnemySearch());
 
-            Debug.Log("Patrollingg");
+           
         }
 
         if (FOV_Object.isPlayerDetected && (isPatrolling || isSearching))
