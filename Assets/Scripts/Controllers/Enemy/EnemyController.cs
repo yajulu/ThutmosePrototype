@@ -17,21 +17,33 @@ public class EnemyController : MonoBehaviour
     int currPoint;
     NavMeshAgent agent;
     Transform playerTarget;
+    int animSpeedHash;
 
     //booleans
     bool isPatrolling, isSearching, isDetecting, isAttacking;
     private void Awake()
     {
+        
         agent = GetComponent<NavMeshAgent>();
         enemyAnimator = GetComponent<Animator>();
+        animSpeedHash = Animator.StringToHash("Speed");
+        enemyAnimator.SetFloat(animSpeedHash, 0f);
         playerTarget = GameObject.FindGameObjectWithTag("Player").transform;
         Invoke("EnemyPatrol", 2);
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        if(isPatrolling)
+            enemyAnimator.SetFloat(animSpeedHash, 0.5f, 0.1f, Time.deltaTime);
+        if(isDetecting)
+            enemyAnimator.SetFloat(animSpeedHash, 0f, 0.1f, Time.deltaTime);
+        if(isAttacking)
+            enemyAnimator.SetFloat(animSpeedHash, 1f, 0.1f, Time.deltaTime);
+        if(isSearching)
+            enemyAnimator.SetFloat(animSpeedHash, 0, 0.1f, Time.deltaTime);
         if (agent.remainingDistance <= 0 && isPatrolling)
         {
             if (!isSearching)
@@ -65,6 +77,7 @@ public class EnemyController : MonoBehaviour
                 if(playerCollier.Length > 0)
                 {
                     Debug.Log("Player caught");
+                    
                 }
                 else
                 {
@@ -79,6 +92,7 @@ public class EnemyController : MonoBehaviour
 
     void EnemyPatrol()
     {
+       
         if (pathPoints.Length > 0)
         {
             isPatrolling = true;
@@ -95,21 +109,24 @@ public class EnemyController : MonoBehaviour
         agent.isStopped = false;
         agent.updateRotation = true;
         agent.speed = agent.speed * 2.5f;
+        enemyAnimator.SetFloat(animSpeedHash, 1, 0.1f, Time.deltaTime);
         agent.SetDestination(playerTarget.position);
-        enemyAnimator.SetTrigger("Run");
         Debug.Log(agent.destination);
     }
 
     IEnumerator StartDetecting()
     {
+        enemyAnimator.SetFloat(animSpeedHash, 0f, 0.1f, Time.deltaTime);
+        enemyAnimator.SetTrigger("Detected");
         agent.updateRotation = false;
         transform.LookAt(playerTarget);
         
         agent.isStopped = true;
         isDetecting = true;
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(2);
         if (FOV_Object.isPlayerDetected)
         {
+           
             isAttacking = true;
             AttackPlayer();
         }
