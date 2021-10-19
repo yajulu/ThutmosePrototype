@@ -12,10 +12,10 @@ public class PickUpStone : MonoBehaviour
     
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("TaG ENTER: " + other.tag);
         if (other.CompareTag("Player"))
         {
             textUI.text = "Stone";
-          
         }
         
 
@@ -23,6 +23,8 @@ public class PickUpStone : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
+        Debug.Log("TaG EXIT: " + other.tag);
+
         if (other.CompareTag("Player"))
         {
             textUI.text = "";

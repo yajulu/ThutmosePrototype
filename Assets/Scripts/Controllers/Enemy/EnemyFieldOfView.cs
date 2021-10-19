@@ -9,8 +9,6 @@ public class EnemyFieldOfView : MonoBehaviour
     [SerializeField]
     TextMeshProUGUI text;
     [SerializeField]
-    GameObject prefabCircle;
-    [SerializeField]
     [Range(0,360)]
     public float  angle;
     [SerializeField]
@@ -20,7 +18,6 @@ public class EnemyFieldOfView : MonoBehaviour
     [Range(0,10)]
     float meshResolution;
 
-    Transform playerTransform;
 
     [SerializeField]
     LayerMask obstaclesLayer, targetLayer;
@@ -30,20 +27,26 @@ public class EnemyFieldOfView : MonoBehaviour
     Mesh fovMesh;
 
     [HideInInspector]
-    public bool isPlayerDetected;
+    public bool isPlayerDetected,isFakePlayerDetected;
+
+    [SerializeField]
+    Transform character;
+
+    [HideInInspector]
+    public bool isDetectingStopped;
 
     private void Start()
     {
         fovMesh = new Mesh();
         fovMesh.name = "FOV Mesh";
         fovMeshFilter.mesh = fovMesh;
-        playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         StartCoroutine(DetectionRoutine());
     }
 
     private void Update()
     {
-        DrawFOV();
+        if(!isDetectingStopped)
+            DrawFOV();
     }
 
     
@@ -53,21 +56,30 @@ public class EnemyFieldOfView : MonoBehaviour
         Collider[] playerCollier = Physics.OverlapSphere(transform.position, radius,targetLayer);
         if (playerCollier.Length > 0)
         {
+            
             Transform playerTransform = playerCollier[0].transform;
             Vector3 dirToPlayer = (playerTransform.position - transform.position).normalized;
             if (Vector3.Angle(transform.forward, dirToPlayer) < angle / 2)
             {
+
                 float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
                 if (!Physics.Raycast(transform.position, dirToPlayer, distanceToPlayer, obstaclesLayer))
                 {
-                    isPlayerDetected = true;
-                    //Debug.Log("Player Detected!");
+                    if (playerTransform.CompareTag("FakePlayer"))
+                    {
+
+                        isFakePlayerDetected = true;
+                        Debug.Log("Fake player detected");
+                    }
+                        
+                    else   
+                        isPlayerDetected = true;
                     text.text= "PLAYER DETECTED1";
+
                 }
                 else
                 {
                     isPlayerDetected = false;
-                    //Debug.Log("Player Vanished! 1");
                     text.text = "PLAYER GOT COVER";
                 }
                     
@@ -75,10 +87,16 @@ public class EnemyFieldOfView : MonoBehaviour
             else
             {
                 isPlayerDetected = false;
-
+                isFakePlayerDetected = false;
                 text.text = "";
             }
          }
+        else
+        {
+            isPlayerDetected = false;
+            isFakePlayerDetected = false;
+            text.text = "";
+        }
     }
 
     void DrawFOV()
@@ -137,7 +155,7 @@ public class EnemyFieldOfView : MonoBehaviour
     }
     IEnumerator DetectionRoutine()
     {
-        while (true)
+        while (true && !isDetectingStopped)
         {
             yield return new WaitForSeconds(0.2f);
             FindVisibleTarget();

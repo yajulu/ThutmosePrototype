@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Rewind
+  m_Shader: {fileID: 4800000, guid: 1c853599f51444f9a9428e3e8d48a5ca, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 2
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 3000
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _DistortionMap:
+        m_Texture: {fileID: 2800000, guid: 6836a3ad6f20a44948f41adf9fa266e7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Farmer_Diffuse:
+        m_Texture: {fileID: 2800000, guid: 57d569f6be0da7f4b80365d8a9d7d16b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SmallWaves:
+        m_Texture: {fileID: 2800000, guid: 6836a3ad6f20a44948f41adf9fa266e7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture0:
+        m_Texture: {fileID: 2800000, guid: 6836a3ad6f20a44948f41adf9fa266e7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TextureSample0:
+        m_Texture: {fileID: 2800000, guid: 440eb36db91ca410f800ff3cfe43572f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TextureSample1:
+        m_Texture: {fileID: 2800000, guid: 44b9eb5ebc29143af9c7a18aecaaea15, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _texcoord:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _AlphaCutoff: 0.5
+    - _Clip: 0.023529412
+    - _Dissolve: 0
+    - _Distortion: 0.291
+    - _Float0: 0
+    - _Float1: 5
+    - _Multiply: 4.23
+    - _Speed: 0.584
+    - _Threshold: 0
+    - _TileX: 0.16
+    - _TileY: 0
+    - _TransAmbient: 0.319
+    - _TransDirect: 0.545
+    - _TransNormal: 0.111
+    - _TransScattering: 9.5
+    - _TransShadow: 0.667
+    - _TransStrength: 17.5
+    - _TransmissionShadow: 0
+    - __dirty: 0
+    m_Colors:
+    - _Color: {r: 1.4980392, g: 0.5647059, b: 0, a: 0}
+    - _Color0: {r: 6.498019, g: 2.4463131, b: 0, a: 0}
+    - _Color1: {r: 0.9245283, g: 0, b: 0, a: 1}
+    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Tiling: {r: 0, g: 0, b: 0, a: 0}
+    - _Vector0: {r: 5, g: 0.56, b: 0, a: 0}
+  m_BuildTextureStacks: []

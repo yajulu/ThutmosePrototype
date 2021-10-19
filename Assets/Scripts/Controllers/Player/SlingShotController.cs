@@ -100,7 +100,7 @@ public class SlingShotController : MonoBehaviour
         isCurrentlyShooting = true;
         yield return new WaitForSeconds(0.6f);
         isCurrentlyAiming = false;
-        Vector3 launchPos = new Vector3(transform.position.x, transform.position.y + 2, transform.position.z);
+        Vector3 launchPos = new Vector3(transform.position.x, transform.position.y  +  1, transform.position.z);
         GameObject stone = Instantiate(stonePrefab, launchPos, Quaternion.identity);
         stone.GetComponent<Rigidbody>().AddRelativeForce(transform.forward * throwingForce, ForceMode.Impulse);
         isCurrentlyShooting = false;

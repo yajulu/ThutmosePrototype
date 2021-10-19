@@ -12,6 +12,10 @@ public class TimeAbilitiesController : MonoBehaviour
     CharacterController playerController;
     GameObject playerMesh;
     GameObject playerReplica;
+    [SerializeField]
+    GameObject fakePlayerPrefab;
+    [HideInInspector]
+    public GameObject fakePlayer;
 
     #region Rewind Varaibles
     List<Vector3> trackingList;
@@ -44,7 +48,9 @@ public class TimeAbilitiesController : MonoBehaviour
     {
         playerInput.CharacterActionMap.TimeAbility.started += OnAbilityInput;
         playerInput.CharacterActionMap.TimeAbility.canceled += OnAbilityInput;
-      
+        playerInput.CharacterActionMap.TimeAbility.started += InstantiateFakePlayer;
+        playerInput.CharacterActionMap.TimeAbility.canceled += DissolveFakePlayer;
+
     }
 
 
@@ -57,6 +63,8 @@ public class TimeAbilitiesController : MonoBehaviour
             playerController.enabled = !isCurrentlyRewinding;
             playerMesh.SetActive(!isCurrentlyRewinding);
             playerReplica.SetActive(isCurrentlyRewinding);
+          
+            
 
             if (isCurrentlyRewinding)
                 StartCoroutine(ActivateRewind());
@@ -69,6 +77,26 @@ public class TimeAbilitiesController : MonoBehaviour
         }
       
            
+    }
+
+
+    void InstantiateFakePlayer(InputAction.CallbackContext context)
+    {
+        if (!slingShotController.isCurrentlyAiming && isCurrentlyRewinding)
+        {
+            fakePlayer = Instantiate(fakePlayerPrefab, transform.position, Quaternion.identity);
+        }
+        
+    }
+
+
+    void DissolveFakePlayer(InputAction.CallbackContext context)
+    {
+        if (fakePlayer != null)
+        {
+            fakePlayer.transform.GetChild(0).GetComponent<Animator>().SetTrigger("DissolveTrig");
+        }
+
     }
 
 

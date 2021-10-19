@@ -41,7 +41,7 @@ public class LootController : MonoBehaviour
             if (hitCollider.CompareTag("Collectible"))
             {
                 
-                Debug.Log(Vector3.Distance(hitCollider.transform.position, transform.position));
+
                 if (Vector3.Distance(hitCollider.transform.position, transform.position) < minDistance)
                 {
                    
