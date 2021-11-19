@@ -1,8 +1,14 @@
 fileFormatVersion: 2
-guid: b0054937c027d44f29212e28d76eb92f
+guid: 86c89156cb59e4de8b74d2489ecd7199
 ModelImporter:
   serializedVersion: 20200
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      74: -8046428975310344405
+    second: LidOpen
+  - first:
+      74: 19019735836762032
+    second: LidClose
   externalObjects:
   - first:
       type: UnityEngine:Material
@@ -11,8 +17,8 @@ ModelImporter:
     second: {fileID: 2100000, guid: a12797c69d3fc4accb43c3bb6cd2dae5, type: 2}
   materials:
     materialImportMode: 2
-    materialName: 0
-    materialSearch: 1
+    materialName: 1
+    materialSearch: 0
     materialLocation: 1
   animations:
     legacyGenerateAnimations: 4
@@ -50,7 +56,7 @@ ModelImporter:
     importLights: 1
     fileIdsGeneration: 2
     swapUVChannels: 0
-    generateSecondaryUV: 1
+    generateSecondaryUV: 0
     useFileUnits: 1
     keepQuads: 0
     weldVertices: 1
@@ -78,7 +84,7 @@ ModelImporter:
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
   referencedClips: []
-  importAnimation: 1
+  importAnimation: 0
   humanDescription:
     serializedVersion: 3
     human: []

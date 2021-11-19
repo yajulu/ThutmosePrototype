@@ -133,6 +133,7 @@ public class TimeAbilitiesController : MonoBehaviour
             }
 
             yield return new WaitForSeconds(0.5f);
+            
         }
     }
 

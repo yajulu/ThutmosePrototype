@@ -31,9 +31,17 @@ public class DetectState : StateMachineBehaviour
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-       
-        agent.transform.LookAt(player);
-        jackalBotController.AttackPlayer();
+        if (jackalBotController.fovController.isFakePlayerDetected)
+        {
+            agent.transform.LookAt(FakePlayerTransform);
+        }
+        else
+        {
+            agent.transform.LookAt(player);
+        }
+
+            
+        //jackalBotController.AttackPlayer();
 
     }
 

@@ -73,7 +73,7 @@ public class JackalBotController : MonoBehaviour
         
         if(agent.remainingDistance < 2)
         {
-            Collider[] playerCollier = Physics.OverlapSphere(transform.position, 1.5f, targetLayer);
+            Collider[] playerCollier = Physics.OverlapSphere(transform.position, 3f, targetLayer);
             if (playerCollier.Length > 0)
             {
                 agent.isStopped = true;

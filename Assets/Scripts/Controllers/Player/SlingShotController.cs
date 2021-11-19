@@ -9,6 +9,8 @@ public class SlingShotController : MonoBehaviour
     GameObject stonePrefab;
     [SerializeField]
     float throwingForce;
+    [SerializeField]
+    LayerMask targetLayer;
     [HideInInspector]
     public bool isCurrentlyAiming,isCurrentlyShooting;
     PlayerMovement playerMovement;
@@ -16,6 +18,8 @@ public class SlingShotController : MonoBehaviour
     InventoryManager inventory;
     Animator animatorController;
     int aimHash, shootHash;
+    RaycastHit boxHit;
+    bool isHitDetect;
    
     void Awake()
     {
@@ -99,10 +103,24 @@ public class SlingShotController : MonoBehaviour
     {
         isCurrentlyShooting = true;
         yield return new WaitForSeconds(0.6f);
-        isCurrentlyAiming = false;
+        isHitDetect = Physics.BoxCast(transform.position, transform.localScale * 10, transform.forward, out boxHit, transform.rotation, 2000, targetLayer);
+        Vector3 forceDir = transform.forward;
+        if (isHitDetect)
+        {
+            //Output the name of the Collider your Box hit
+            Debug.Log("Hit : " + boxHit.collider.name);
+            forceDir = Vector3.Normalize( boxHit.point - transform.position);
+        }
+    
+
+   
+    isCurrentlyAiming = false;
         Vector3 launchPos = new Vector3(transform.position.x, transform.position.y  +  1, transform.position.z);
         GameObject stone = Instantiate(stonePrefab, launchPos, Quaternion.identity);
-        stone.GetComponent<Rigidbody>().AddRelativeForce(transform.forward * throwingForce, ForceMode.Impulse);
+        stone.GetComponent<Rigidbody>().AddRelativeForce(forceDir * throwingForce, ForceMode.Impulse);
         isCurrentlyShooting = false;
     }
+
+   
+   
 }
