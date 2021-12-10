@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
 
-    PlayerInput playerInput;
+    Old_PlayerInput _oldPlayerInput;
     CharacterController characterController;
     GameObject trailObject;
     SlingShotController slingShotController;
@@ -52,7 +52,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Awake()
     {
-        playerInput = new PlayerInput();
+        _oldPlayerInput = new Old_PlayerInput();
         characterController = GetComponent<CharacterController>();
         animatorController = GetComponent<Animator>();
         slingShotController = GetComponent<SlingShotController>();
@@ -67,12 +67,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnEnable()
     {
-        playerInput.CharacterActionMap.Enable();
+        _oldPlayerInput.CharacterActionMap.Enable();
     }
 
     private void OnDisable()
     {
-        playerInput.CharacterActionMap.Disable();
+        _oldPlayerInput.CharacterActionMap.Disable();
     }
     void Update()
     {
@@ -141,12 +141,12 @@ public class PlayerMovement : MonoBehaviour
     void InitializeInput()
     {
         dodgeSpeedMult = 1;
-        playerInput.CharacterActionMap.Move.started += OnMovementInput;
-        playerInput.CharacterActionMap.Move.canceled += OnMovementInput;
-        playerInput.CharacterActionMap.Move.performed += OnMovementInput;
-        playerInput.CharacterActionMap.Run.started += OnRunInput;
-        playerInput.CharacterActionMap.Run.canceled += OnRunInput;
-        playerInput.CharacterActionMap.Dodge.started += OnDodgeInput;
+        _oldPlayerInput.CharacterActionMap.Move.started += OnMovementInput;
+        _oldPlayerInput.CharacterActionMap.Move.canceled += OnMovementInput;
+        _oldPlayerInput.CharacterActionMap.Move.performed += OnMovementInput;
+        _oldPlayerInput.CharacterActionMap.Run.started += OnRunInput;
+        _oldPlayerInput.CharacterActionMap.Run.canceled += OnRunInput;
+        _oldPlayerInput.CharacterActionMap.Dodge.started += OnDodgeInput;
       
 
     }

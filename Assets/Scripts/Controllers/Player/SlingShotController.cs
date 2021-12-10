@@ -14,7 +14,7 @@ public class SlingShotController : MonoBehaviour
     [HideInInspector]
     public bool isCurrentlyAiming,isCurrentlyShooting;
     PlayerMovement playerMovement;
-    PlayerInput playerInput;
+    Old_PlayerInput _oldPlayerInput;
     InventoryManager inventory;
     Animator animatorController;
     int aimHash, shootHash;
@@ -26,7 +26,7 @@ public class SlingShotController : MonoBehaviour
         playerMovement = GetComponent<PlayerMovement>();
         animatorController = GetComponent<Animator>();
         inventory = GetComponent<InventoryManager>();
-        playerInput = new PlayerInput();
+        _oldPlayerInput = new Old_PlayerInput();
         InitializeInput();
         aimHash = Animator.StringToHash("AimTrigger");
         shootHash = Animator.StringToHash("ShootTrigger");
@@ -35,12 +35,12 @@ public class SlingShotController : MonoBehaviour
 
     private void OnEnable()
     {
-        playerInput.CharacterActionMap.Enable();
+        _oldPlayerInput.CharacterActionMap.Enable();
     }
 
     private void OnDisable()
     {
-        playerInput.CharacterActionMap.Disable();
+        _oldPlayerInput.CharacterActionMap.Disable();
     }
     // Update is called once per frame
     void Update()
@@ -50,8 +50,8 @@ public class SlingShotController : MonoBehaviour
     }
     void InitializeInput()
     {
-        playerInput.CharacterActionMap.Shoot.started += AimStart;
-        playerInput.CharacterActionMap.Shoot.canceled += Shoot;
+        _oldPlayerInput.CharacterActionMap.Shoot.started += AimStart;
+        _oldPlayerInput.CharacterActionMap.Shoot.canceled += Shoot;
 
     }
 

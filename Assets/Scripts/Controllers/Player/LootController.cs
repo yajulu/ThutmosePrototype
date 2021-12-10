@@ -6,28 +6,28 @@ using UnityEngine.InputSystem;
 public class LootController : MonoBehaviour
 {
     InventoryManager inventory;
-    PlayerInput playerInput;
+    Old_PlayerInput _oldPlayerInput;
     void Awake()
     {
         inventory = GetComponent<InventoryManager>();
        
-        playerInput = new PlayerInput();
+        _oldPlayerInput = new Old_PlayerInput();
         InitializeInput();
     }
 
     private void OnEnable()
     {
-        playerInput.CharacterActionMap.Enable();
+        _oldPlayerInput.CharacterActionMap.Enable();
     }
 
     private void OnDisable()
     {
-        playerInput.CharacterActionMap.Disable();
+        _oldPlayerInput.CharacterActionMap.Disable();
     }
 
     void InitializeInput()
     {
-        playerInput.CharacterActionMap.Interact.started += Loot;
+        _oldPlayerInput.CharacterActionMap.Interact.started += Loot;
 
     }
 

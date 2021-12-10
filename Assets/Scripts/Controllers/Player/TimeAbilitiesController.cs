@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 public class TimeAbilitiesController : MonoBehaviour
 {
-    PlayerInput playerInput;
+    Old_PlayerInput _oldPlayerInput;
     PlayerMovement playerMovement;
     SlingShotController slingShotController;
     CharacterController playerController;
@@ -29,7 +29,7 @@ public class TimeAbilitiesController : MonoBehaviour
         slingShotController = GetComponent<SlingShotController>();
         playerMesh = transform.GetChild(0).gameObject;
         playerReplica = transform.GetChild(2).gameObject;
-        playerInput = new PlayerInput();
+        _oldPlayerInput = new Old_PlayerInput();
         InitializeInput();
         trackingList = new List<Vector3>();
         StartCoroutine(PlayerTracker());
@@ -37,19 +37,19 @@ public class TimeAbilitiesController : MonoBehaviour
 
     private void OnEnable()
     {
-        playerInput.CharacterActionMap.Enable();
+        _oldPlayerInput.CharacterActionMap.Enable();
     }
 
     private void OnDisable()
     {
-        playerInput.CharacterActionMap.Disable();
+        _oldPlayerInput.CharacterActionMap.Disable();
     }
     void InitializeInput()
     {
-        playerInput.CharacterActionMap.TimeAbility.started += OnAbilityInput;
-        playerInput.CharacterActionMap.TimeAbility.canceled += OnAbilityInput;
-        playerInput.CharacterActionMap.TimeAbility.started += InstantiateFakePlayer;
-        playerInput.CharacterActionMap.TimeAbility.canceled += DissolveFakePlayer;
+        _oldPlayerInput.CharacterActionMap.TimeAbility.started += OnAbilityInput;
+        _oldPlayerInput.CharacterActionMap.TimeAbility.canceled += OnAbilityInput;
+        _oldPlayerInput.CharacterActionMap.TimeAbility.started += InstantiateFakePlayer;
+        _oldPlayerInput.CharacterActionMap.TimeAbility.canceled += DissolveFakePlayer;
 
     }
 
