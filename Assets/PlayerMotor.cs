@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine.Utility;
+using Unity.Collections;
 using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -12,14 +13,16 @@ public class PlayerMotor : MonoBehaviour
     private int _animatorX;
     private int _animatorY;
     private int _animatorIsRunning;
+    private int _animatorIsJumping;
     private int _animatorIsCrouching;
+    private int _animatorPlayerAltitude;
 
     private Vector2 _moveInput;
     private Vector2 _animatorDirection;
     private Vector3 _moveDirection;
     private Vector3 _movementVelocity;
     private Vector3 _lookDirection;
-    private bool _isRunning;
+    [SerializeField, ReadOnly] private bool isRunning;
 
     private float _accumulator;
 
@@ -36,22 +39,41 @@ public class PlayerMotor : MonoBehaviour
     
     private Camera _mainCamera;
     private Transform _mainCameraTransform;
+
+    private Ray _groundCheckRay;
+    private RaycastHit _groundRaycastHit;
     
 
     [SerializeField] private float speed = 3f;
-    [SerializeField] private float drag = 2.5f;
+    [SerializeField] private float groundDrag = 10f;
+    [SerializeField] private float airDrag = 15f;
     [SerializeField, Range(0f, 1f)] private float dragInputFactor = 0.5f;
     [SerializeField] private float maxSpeed = 5f;
     [SerializeField] private float rotationSpeed = 200f;
     [SerializeField] private float jumpSpeed = 10f;
-    [SerializeField, Range(1, 3)] private float runModifier;
+    [SerializeField, Range(0f, 1f)] private float jumpUpFactor = 0.7f;
+    [SerializeField, Range(1f, 3f)] private float runModifier;
+
+    [SerializeField] private float gravity = -9.8f;
+
+    [SerializeField] private float maxJumpHeight = 2f;
+    [SerializeField] private float maxJumpTime = 1f;
+    [SerializeField, ReadOnly] private float _initialJumpingVelocity;
     
+    [SerializeField, ReadOnly] private bool isJumpPressed = false;
+    [SerializeField, ReadOnly] private bool isJumping = false;
+    [SerializeField, ReadOnly] private bool hasJumped = false;
+    [SerializeField, ReadOnly] private bool hasLanded = false;
+    
+
     private void Awake()
     {
         _animatorX = Animator.StringToHash("x");
         _animatorY = Animator.StringToHash("z");
         _animatorIsRunning = Animator.StringToHash("isRunning");
+        _animatorIsJumping = Animator.StringToHash("isJumping");
         _animatorIsCrouching = Animator.StringToHash("isCrouching");
+        _animatorPlayerAltitude = Animator.StringToHash("playerAltitude");
         
         _oldPlayerInput = GetComponent<PlayerInput>();
         _controller = GetComponent<CharacterController>();
@@ -60,6 +82,7 @@ public class PlayerMotor : MonoBehaviour
         _moveAction = _oldPlayerInput.actions["Move"];
         _runAction = _oldPlayerInput.actions["Run"];
         _jumpAction = _oldPlayerInput.actions["Jump"];
+        InitializeJumpVariables();
     }
 
     private void OnEnable()
@@ -78,14 +101,22 @@ public class PlayerMotor : MonoBehaviour
         _runAction.canceled -= RunActionOnCanceled;
     }
 
+    private void InitializeJumpVariables()
+    {
+        var timeToApex = maxJumpTime / 2;
+        gravity = (-2 * maxJumpHeight / Mathf.Pow(timeToApex, 2));
+        _initialJumpingVelocity = (2 * maxJumpHeight) / timeToApex;
+    }
+    
+
     private void RunActionOnCanceled(InputAction.CallbackContext obj)
     {
-        _isRunning = false;
+        isRunning = false;
     }
 
     private void RunActionOnStarted(InputAction.CallbackContext obj)
     {
-        _isRunning = true;
+        isRunning = true;
     }
     
     
@@ -125,15 +156,20 @@ public class PlayerMotor : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!_controller.isGrounded)
-        {
-            //Apply Gravity
-            _movementVelocity += Physics.gravity * (Time.fixedTime);    
-        }
-        else
+        if (_controller.isGrounded)
         {
             _movementVelocity.y = 0; //ignore vertical velocity on ground
         }
+        else
+        {
+            //Apply Gravity
+            _movementVelocity.y += gravity * Time.deltaTime;
+        }
+    }
+
+    private void GroundCheck()
+    {
+        
     }
 
     private void UpdateInput()
@@ -160,10 +196,16 @@ public class PlayerMotor : MonoBehaviour
 
         if (_controller.isGrounded)
         {
-            if (_jumpAction.ReadValue<float>() > 0.5f)
+            if (_jumpAction.ReadValue<float>() > 0.5f && !isJumping)
             {
                 Debug.Log("Jump");
-                _movementVelocity.y += jumpSpeed;
+                isJumping = true;
+                _movementVelocity += ((_moveDirection * (1 - jumpUpFactor))  + (Vector3.up * jumpUpFactor)).normalized * _initialJumpingVelocity;
+            }
+            else
+            {
+                //Reset Jumping Flag
+                isJumping = false;
             }
         }
         else
@@ -179,9 +221,10 @@ public class PlayerMotor : MonoBehaviour
         
         //Applying Drag
         _movementVelocity.y = 0;
-        _movementVelocity -= _movementVelocity.normalized * ( (1 - (_moveDirection.magnitude * dragInputFactor)) * drag * Time.deltaTime); 
+        _movementVelocity -= _movementVelocity.normalized *
+                             ((1 - (_moveDirection.magnitude * dragInputFactor)) * (_controller.isGrounded ? groundDrag : airDrag) * Time.deltaTime); 
         
-        _movementVelocity = Vector3.ClampMagnitude(_movementVelocity, _isRunning? maxSpeed * runModifier : maxSpeed);   
+        _movementVelocity = Vector3.ClampMagnitude(_movementVelocity, isRunning? maxSpeed * runModifier : maxSpeed);   
         _movementVelocity.y = verticalVelocity;
         _collisionFlags = _controller.Move(_movementVelocity * Time.deltaTime);
     }
@@ -190,8 +233,14 @@ public class PlayerMotor : MonoBehaviour
     {
         _playerAnimator.SetFloat(_animatorX, _animatorDirection.x, 0.1f, Time.deltaTime);
         _playerAnimator.SetFloat(_animatorY, _animatorDirection.y, 0.1f, Time.deltaTime);
-        _playerAnimator.SetBool(_animatorIsRunning, _isRunning);
+        _playerAnimator.SetBool(_animatorIsRunning, isRunning);
+        _playerAnimator.SetBool(_animatorIsJumping, isJumping);
     }
-    
-    
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawRay(transform.position, _movementVelocity);
+        Gizmos.DrawRay(transform.position, _movementVelocity);
+    }
 }
