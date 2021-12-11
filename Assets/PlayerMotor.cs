@@ -58,7 +58,8 @@ public class PlayerMotor : MonoBehaviour
 
     [SerializeField] private float maxJumpHeight = 2f;
     [SerializeField] private float maxJumpTime = 1f;
-    [SerializeField, ReadOnly] private float _initialJumpingVelocity;
+    [SerializeField, ReadOnly] private float initialJumpingVelocity;
+    [SerializeField, ReadOnly] private float playerAltitude;
     
     [SerializeField, ReadOnly] private bool isJumpPressed = false;
     [SerializeField, ReadOnly] private bool isJumping = false;
@@ -105,7 +106,7 @@ public class PlayerMotor : MonoBehaviour
     {
         var timeToApex = maxJumpTime / 2;
         gravity = (-2 * maxJumpHeight / Mathf.Pow(timeToApex, 2));
-        _initialJumpingVelocity = (2 * maxJumpHeight) / timeToApex;
+        initialJumpingVelocity = (2 * maxJumpHeight) / timeToApex;
     }
     
 
@@ -165,11 +166,20 @@ public class PlayerMotor : MonoBehaviour
             //Apply Gravity
             _movementVelocity.y += gravity * Time.deltaTime;
         }
+
+        GroundCheck();
     }
 
     private void GroundCheck()
     {
-        
+        var transform1 = transform;
+        _groundCheckRay.origin = transform1.position;
+        _groundCheckRay.direction = -transform1.up;
+        if (Physics.SphereCast(_groundCheckRay, 0.2f, out _groundRaycastHit, 10f))
+        {
+            Debug.Log($"Jumping: {playerAltitude}");
+            playerAltitude = transform.position.y - _groundRaycastHit.point.y;
+        }
     }
 
     private void UpdateInput()
@@ -200,7 +210,7 @@ public class PlayerMotor : MonoBehaviour
             {
                 Debug.Log("Jump");
                 isJumping = true;
-                _movementVelocity += ((_moveDirection * (1 - jumpUpFactor))  + (Vector3.up * jumpUpFactor)).normalized * _initialJumpingVelocity;
+                _movementVelocity += ((_moveDirection * (1 - jumpUpFactor))  + (Vector3.up * jumpUpFactor)).normalized * initialJumpingVelocity;
             }
             else
             {
@@ -233,6 +243,7 @@ public class PlayerMotor : MonoBehaviour
     {
         _playerAnimator.SetFloat(_animatorX, _animatorDirection.x, 0.1f, Time.deltaTime);
         _playerAnimator.SetFloat(_animatorY, _animatorDirection.y, 0.1f, Time.deltaTime);
+        _playerAnimator.SetFloat(_animatorPlayerAltitude, playerAltitude);
         _playerAnimator.SetBool(_animatorIsRunning, isRunning);
         _playerAnimator.SetBool(_animatorIsJumping, isJumping);
     }
