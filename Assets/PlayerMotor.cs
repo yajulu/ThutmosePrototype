@@ -47,6 +47,7 @@ public class PlayerMotor : MonoBehaviour
     [SerializeField] private float speed = 3f;
     [SerializeField] private float groundDrag = 10f;
     [SerializeField] private float airDrag = 15f;
+    [SerializeField] private bool input2D = false;
     [SerializeField, Range(0f, 1f)] private float dragInputFactor = 0.5f;
     [SerializeField] private float maxSpeed = 5f;
     [SerializeField] private float rotationSpeed = 200f;
@@ -159,7 +160,9 @@ public class PlayerMotor : MonoBehaviour
     {
         if (_controller.isGrounded)
         {
-            _movementVelocity.y = 0; //ignore vertical velocity on ground
+            //ignore vertical velocity on ground
+            _movementVelocity.y = 0;
+            isJumping = false;
         }
         else
         {
@@ -175,7 +178,7 @@ public class PlayerMotor : MonoBehaviour
         var transform1 = transform;
         _groundCheckRay.origin = transform1.position;
         _groundCheckRay.direction = -transform1.up;
-        if (Physics.SphereCast(_groundCheckRay, 0.2f, out _groundRaycastHit, 10f))
+        if (Physics.SphereCast(_groundCheckRay, 0.3f, out _groundRaycastHit, 10f))
         {
             Debug.Log($"Jumping: {playerAltitude}");
             playerAltitude = transform.position.y - _groundRaycastHit.point.y;
@@ -193,16 +196,31 @@ public class PlayerMotor : MonoBehaviour
         //Update the movement direction
         var cameraForward = _mainCameraTransform.forward;
         var verticalVelocity = _movementVelocity.y;
-        
-        _moveDirection = transform.right * _moveInput.x + transform.forward * _moveInput.y;
+
+        if (input2D)
+        {
+            _moveDirection = Vector3.forward * _moveInput.x;
+        }
+        else
+        {
+            _moveDirection = transform.right * _moveInput.x + transform.forward * _moveInput.y;
+        }
         _moveDirection.y = 0;
         _movementVelocity.y = verticalVelocity;
 
         _moveDirection.Normalize();
         
         //Rotate the Player direction to movement Direction
-        _lookDirection = Vector3.Lerp(transform.forward, cameraForward, Time.deltaTime * rotationSpeed * _moveDirection.magnitude).ProjectOntoPlane(Vector3.up).normalized;
-        transform.rotation = Quaternion.LookRotation(_lookDirection, Vector3.up);
+        if(input2D)
+        {
+            _lookDirection = Vector3.Lerp(transform.forward, _moveInput.x * Vector3.forward, Time.deltaTime * rotationSpeed * 10).ProjectOntoPlane(Vector3.up)
+                .normalized;
+        }
+        else
+        {
+            _lookDirection = Vector3.Lerp(transform.forward, cameraForward, Time.deltaTime * rotationSpeed * _moveDirection.magnitude).ProjectOntoPlane(Vector3.up).normalized;
+        }
+        transform.rotation = Quaternion.LookRotation(_lookDirection, Vector3.up);    
 
         if (_controller.isGrounded)
         {
@@ -241,8 +259,16 @@ public class PlayerMotor : MonoBehaviour
 
     private void UpdateAnimator()
     {
-        _playerAnimator.SetFloat(_animatorX, _animatorDirection.x, 0.1f, Time.deltaTime);
-        _playerAnimator.SetFloat(_animatorY, _animatorDirection.y, 0.1f, Time.deltaTime);
+        if (input2D)
+        {
+            _playerAnimator.SetFloat(_animatorY, Mathf.Abs(_animatorDirection.x), 0.1f, Time.deltaTime);
+        }
+        else
+        {
+            _playerAnimator.SetFloat(_animatorX, _animatorDirection.x, 0.1f, Time.deltaTime);
+            _playerAnimator.SetFloat(_animatorY, _animatorDirection.y, 0.1f, Time.deltaTime);    
+        }
+        
         _playerAnimator.SetFloat(_animatorPlayerAltitude, playerAltitude);
         _playerAnimator.SetBool(_animatorIsRunning, isRunning);
         _playerAnimator.SetBool(_animatorIsJumping, isJumping);
