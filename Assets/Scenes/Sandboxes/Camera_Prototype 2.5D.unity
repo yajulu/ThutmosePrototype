@@ -20178,58 +20178,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1327738630173977737, guid: 0f0bd3606224b984ba931c4d601776b3, type: 3}
-      propertyPath: m_Avatar
-      value: 
-      objectReference: {fileID: 9000000, guid: 76e6e79284b0c934bb1f5fe7dfda5ddb, type: 3}
-    - target: {fileID: 1327738630173977738, guid: 0f0bd3606224b984ba931c4d601776b3, type: 3}
-      propertyPath: drag
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 1327738630173977738, guid: 0f0bd3606224b984ba931c4d601776b3, type: 3}
-      propertyPath: speed
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 1327738630173977738, guid: 0f0bd3606224b984ba931c4d601776b3, type: 3}
-      propertyPath: airDrag
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1327738630173977738, guid: 0f0bd3606224b984ba931c4d601776b3, type: 3}
-      propertyPath: input2D
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1327738630173977738, guid: 0f0bd3606224b984ba931c4d601776b3, type: 3}
-      propertyPath: maxSpeed
-      value: 2.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 1327738630173977738, guid: 0f0bd3606224b984ba931c4d601776b3, type: 3}
-      propertyPath: groundDrag
-      value: 25
-      objectReference: {fileID: 0}
-    - target: {fileID: 1327738630173977738, guid: 0f0bd3606224b984ba931c4d601776b3, type: 3}
-      propertyPath: maxJumpTime
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1327738630173977738, guid: 0f0bd3606224b984ba931c4d601776b3, type: 3}
-      propertyPath: runModifier
-      value: 2.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1327738630173977738, guid: 0f0bd3606224b984ba931c4d601776b3, type: 3}
-      propertyPath: jumpUpFactor
-      value: 0.7
-      objectReference: {fileID: 0}
-    - target: {fileID: 1327738630173977738, guid: 0f0bd3606224b984ba931c4d601776b3, type: 3}
-      propertyPath: maxJumpHeight
-      value: 3.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1327738630173977738, guid: 0f0bd3606224b984ba931c4d601776b3, type: 3}
-      propertyPath: dragInputFactor
-      value: 0.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1327738630173977738, guid: 0f0bd3606224b984ba931c4d601776b3, type: 3}
-      propertyPath: maxBounceJumpCount
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0f0bd3606224b984ba931c4d601776b3, type: 3}
 --- !u!4 &1780446600 stripped

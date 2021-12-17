@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 1327738630173977736}
   - component: {fileID: 1327738630173977737}
   - component: {fileID: 1327738630173977738}
+  - component: {fileID: 96587819563343781}
   - component: {fileID: 1327738630173977740}
   - component: {fileID: 1327738630173977741}
   m_Layer: 0
@@ -79,7 +80,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1327738630173977735}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: a798eba987d4c34459b877154fb97cf4, type: 3}
+  m_Avatar: {fileID: 9000000, guid: 76e6e79284b0c934bb1f5fe7dfda5ddb, type: 3}
   m_Controller: {fileID: 9100000, guid: 95b7c5c3c3891e044bf4937b6213bd2d, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
@@ -102,13 +103,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 477c1f26d6107b74cb569e1df5f8afa8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 10
-  drag: 10
-  dragInputFactor: 0.5
-  maxSpeed: 1.5
+  isRunning: 0
+  speed: 15
+  groundDrag: 25
+  airDrag: 1
+  input2D: 1
+  dragInputFactor: 0.8
+  maxSpeed: 2.3
   rotationSpeed: 10
   jumpSpeed: 7
-  runModifier: 2.3
+  jumpUpFactor: 0.7
+  runModifier: 2.5
+  gravity: -9.8
+  maxJumpHeight: 3.5
+  maxJumpTime: 1
+  maxBounceJumpCount: 1
+  jumpCoolDown: 0.2
+  initialJumpingVelocity: 0
+  playerAltitude: 0
+  jumpCoolDownTimer: 0
+  bounceJumpsCounter: 0
+  isJumpPressed: 0
+  isJumping: 0
+  hasJumped: 0
+  hasLanded: 0
+--- !u!114 &96587819563343781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1327738630173977735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5cebfe94a70ddf489925883067c64a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  run: 0
+  jump: 0
 --- !u!114 &1327738630173977740
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -122,7 +154,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Actions: {fileID: -944628639613478452, guid: 1411ffb704594164095b8b757566cd4b, type: 3}
-  m_NotificationBehavior: 2
+  m_NotificationBehavior: 3
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
     m_PersistentCalls:
