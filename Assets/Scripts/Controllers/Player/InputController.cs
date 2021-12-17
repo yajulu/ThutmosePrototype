@@ -14,9 +14,11 @@ namespace Controllers.Player
         private InputAction _fireAction;
         private InputAction _runAction;
         private InputAction _jumpAction;
+        private InputAction _abilityAction;
 
         public bool run;
         public bool jump;
+        public bool performAbility;
         public Vector2 Move { get; private set; }
 
         private void Awake()
@@ -25,6 +27,7 @@ namespace Controllers.Player
             _moveAction = _playerInput.actions["Move"];
             _runAction = _playerInput.actions["Run"];
             _jumpAction = _playerInput.actions["Jump"];
+            _abilityAction = _playerInput.actions["PerformAbility"];
         }
 
         private void OnEnable()
@@ -33,12 +36,17 @@ namespace Controllers.Player
             _runAction.canceled += RunActionOnCanceled;
             _jumpAction.started += JumpActionOnStarted;
             _jumpAction.canceled += JumpActionOnCanceled;
+            _abilityAction.started += AbilityActionOnStarted;
+            _abilityAction.canceled += AbilityActionOnCanceled;
         }
-        
         private void OnDisable()
         {
             _runAction.started -= RunActionOnStarted;
             _runAction.canceled -= RunActionOnCanceled;
+            _jumpAction.started -= JumpActionOnStarted;
+            _jumpAction.canceled -= JumpActionOnCanceled;
+            _abilityAction.started -= AbilityActionOnStarted;
+            _abilityAction.canceled -= AbilityActionOnCanceled;
         }
         
         private void RunActionOnStarted(InputAction.CallbackContext obj)
@@ -59,6 +67,14 @@ namespace Controllers.Player
         private void JumpActionOnCanceled(InputAction.CallbackContext obj)
         {
             jump = false;
+        }
+        private void AbilityActionOnStarted(InputAction.CallbackContext obj)
+        {
+            performAbility = true;
+        }
+        private void AbilityActionOnCanceled(InputAction.CallbackContext obj)
+        {
+            performAbility = false;
         }
 
         private void Update()
