@@ -8,14 +8,11 @@ namespace Controllers.Player.Abilities
     [RequireComponent(typeof(InputController))]
     public class PlayerAbilityController : MonoBehaviour
     {
-        [Header("Config")]
-        [SerializeField] private AbilitiesConfig abilitiesConfig;
-
         [Header("Ability Settings")] [SerializeField]
         private float maxAbilityPoints = 100;
         
         [Space(10), Header("Debug")]
-        [SerializeField, ReadOnly] private BaseAbilityPerformer selectedAbilityPerformer;
+        [SerializeField, ReadOnly] private AbilityPerformerBase selected;
         [SerializeField, ReadOnly] private Ability selectedAbility;
         [SerializeField, ReadOnly] private float currentAbilityPoints;
         [SerializeField, ReadOnly] private bool isPerformingAbility;
@@ -29,7 +26,7 @@ namespace Controllers.Player.Abilities
 
         private void Start()
         {
-            selectedAbilityPerformer = null;
+            selected = null;
             currentAbilityPoints = maxAbilityPoints;
         }
         private void Update()
@@ -45,9 +42,9 @@ namespace Controllers.Player.Abilities
                 return;
             //Find abilities
 
-            if (selectedAbilityPerformer != null)
+            if (selected != null)
             {
-                selectedAbility = selectedAbilityPerformer.Ability;
+                selectedAbility = selected.Ability;
             }
         }
 
@@ -57,13 +54,13 @@ namespace Controllers.Player.Abilities
             {
                 case true when !isPerformingAbility:
                 {
-                    if (selectedAbilityPerformer != null)
+                    if (selected != null)
                     {
                         //Perform Ability Logic
                         if (selectedAbility.Cost < currentAbilityPoints)
                         {
                             isPerformingAbility = true;
-                            selectedAbilityPerformer.PerformAbility(OnAbilityStarted, OnAbilityCanceled);
+                            selected.PerformAbility(OnAbilityStarted, OnAbilityCanceled);
                         }
                     }
                     else
@@ -80,15 +77,15 @@ namespace Controllers.Player.Abilities
 
                     if (currentAbilityPoints <= 0)
                     {
-                        selectedAbilityPerformer.CancelAbility();
+                        selected.CancelAbility();
                     }
                     break;
                 }
                 case false when isPerformingAbility:
                 {
-                    if (selectedAbilityPerformer != null)
+                    if (selected != null)
                     {
-                        selectedAbilityPerformer.CancelAbility();
+                        selected.CancelAbility();
                     }
 
                     break;
@@ -107,13 +104,13 @@ namespace Controllers.Player.Abilities
                 isAbilityStarted = true;
             }
         }
-        private void OnAbilityCanceled(BaseAbilityPerformer abilityPerformer)
+        private void OnAbilityCanceled(AbilityPerformerBase abilityPerformer)
         {
             // selectedAbilityPerformer.Canceled -= OnAbilityCanceled;
             if (abilityPerformer.Ability.IsTimeBased)
             {
                 isPerformingAbility = false;
-                selectedAbilityPerformer = null;    
+                selected = null;    
             }
         }
     }
