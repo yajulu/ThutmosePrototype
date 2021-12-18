@@ -70,9 +70,36 @@ namespace Controllers.Player.Abilities
 			{
 				if (_abilityBeamHit.collider.gameObject.TryGetComponent(typeof(AbilityPerformerBase), out _abilityPerformerComponent))
 				{
-					selected = (AbilityPerformerBase)_abilityPerformerComponent;
-					selectedAbility = selected.Ability;	
+					if (selected != null)
+					{
+						if (selected != ((AbilityPerformerBase)_abilityPerformerComponent))
+						{
+							if (selected.IsAbilitySelected)
+							{
+								selected.DeselectAbility(OnAbilityDeselected);
+							}	
+						}
+						else
+						{
+							return;
+						}
+					}
+					if (!((AbilityPerformerBase)_abilityPerformerComponent).IsAbilityStarted)
+					{
+						selected = (AbilityPerformerBase)_abilityPerformerComponent;
+						selectedAbility = selected.Ability;
+						selected.SelectAbility(OnAbilitySelected);	
+					}
+					
 				}
+			}
+			else
+			{
+				if (selected != null)
+				{
+					selected.DeselectAbility(OnAbilityDeselected);
+				}
+				selectedAbility = null;
 			}
 		}
 
@@ -85,7 +112,7 @@ namespace Controllers.Player.Abilities
 					if (selected != null)
 					{
 						//Perform Ability Logic
-						if ((selectedAbility.IsTimeBased ? selectedAbility.Cost * Time.deltaTime : selectedAbility.Cost ) < currentAbilityPoints)
+						if ((selectedAbility.IsTimeBased ? selectedAbility.Cost * Time.deltaTime : selectedAbility.Cost ) < currentAbilityPoints && !selected.IsAbilityStarted)
 						{
 							isPerformingAbility = true;
 							selected.PerformAbility(OnAbilityStarted, OnAbilityCanceled);
@@ -128,6 +155,7 @@ namespace Controllers.Player.Abilities
 			if (!selectedAbility.IsTimeBased)
 			{
 				currentAbilityPoints -= selectedAbility.Cost;
+				isPerformingAbility = false;
 			}
 			else
 			{
@@ -135,15 +163,26 @@ namespace Controllers.Player.Abilities
 			}
 		}
 
+		private void OnAbilitySelected()
+		{
+			
+		}
+
+		private void OnAbilityDeselected(AbilityPerformerBase abilityPerformer)
+		{
+			if (selected != abilityPerformer) return;
+			selected = null;
+			selectedAbility = null;
+		}
 		private void OnAbilityCanceled(AbilityPerformerBase abilityPerformer)
 		{
 			// selectedAbilityPerformer.Canceled -= OnAbilityCanceled;
-			if (abilityPerformer.Ability.IsTimeBased)
-			{
-				isPerformingAbility = false;
-				selected = null;
-				selectedAbility = null;
-			}
+			if (!abilityPerformer.Ability.IsTimeBased) return;
+			if(abilityPerformer.IsAbilitySelected)
+				abilityPerformer.DeselectAbility(null);
+			isPerformingAbility = false;
+			selected = null;
+			selectedAbility = null;
 		}
 
 		private void OnDrawGizmosSelected()

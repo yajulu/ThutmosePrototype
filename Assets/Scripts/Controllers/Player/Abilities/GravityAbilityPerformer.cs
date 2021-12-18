@@ -8,6 +8,7 @@ namespace Controllers.Player.Abilities
     {
 
         private Rigidbody _rigidbody;
+        [SerializeField] private GameObject selectionObject;
 
         private void Awake()
         {
@@ -19,12 +20,13 @@ namespace Controllers.Player.Abilities
         {
             _rigidbody.useGravity = true;
             _rigidbody.isKinematic = true;
+            selectionObject.SetActive(isAbilitySelected);
         }
 
-        protected override void AbilityLogic()
+        protected override void AbilityStartedLogic()
         {
             _rigidbody.isKinematic = false;
-            base.AbilityLogic();
+            base.AbilityStartedLogic();
         }
 
         protected override void AbilityCancelLogic()
@@ -32,6 +34,18 @@ namespace Controllers.Player.Abilities
             _rigidbody.isKinematic = true;
             _rigidbody.velocity = Vector3.zero;
             base.AbilityCancelLogic();
+        }
+
+        protected override void SelectedLogic()
+        {
+            selectionObject.SetActive(true);
+            base.SelectedLogic();
+        }
+
+        protected override void DeselectedLogic()
+        {
+            selectionObject.SetActive(false);
+            base.DeselectedLogic();
         }
     }
 }
