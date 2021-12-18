@@ -20,6 +20,7 @@ namespace Controllers.Player
         public bool jump;
         public bool performAbility;
         public Vector2 Move { get; private set; }
+        public Vector2 Look { get; private set; }
 
         private void Awake()
         {
@@ -27,6 +28,7 @@ namespace Controllers.Player
             _moveAction = _playerInput.actions["Move"];
             _runAction = _playerInput.actions["Run"];
             _jumpAction = _playerInput.actions["Jump"];
+            _lookAction = _playerInput.actions["Look"];
             _abilityAction = _playerInput.actions["PerformAbility"];
         }
 
@@ -80,6 +82,7 @@ namespace Controllers.Player
         private void Update()
         {
             Move = _moveAction.ReadValue<Vector2>();
+            Look = _lookAction.ReadValue<Vector2>();
         }
     }
 }

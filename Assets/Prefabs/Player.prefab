@@ -46,6 +46,7 @@ GameObject:
   - component: {fileID: 1327738630173977738}
   - component: {fileID: 96587819563343781}
   - component: {fileID: 1327738630173977740}
+  - component: {fileID: 7971979416172280133}
   - component: {fileID: 1327738630173977741}
   m_Layer: 0
   m_Name: Player
@@ -103,7 +104,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 477c1f26d6107b74cb569e1df5f8afa8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isRunning: 0
   speed: 15
   groundDrag: 25
   airDrag: 1
@@ -141,6 +141,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   run: 0
   jump: 0
+  performAbility: 0
 --- !u!114 &1327738630173977740
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -231,6 +232,32 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &7971979416172280133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1327738630173977735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6aabdcd56f22790469e5071bf8a6274d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxAbilityPoints: 100
+  maxActivationDistance: 20
+  abilityLayer:
+    serializedVersion: 2
+    m_Bits: 4096
+  abilityBeamRadius: 1
+  aimingCenter: {fileID: 1327738630450694607}
+  selected: {fileID: 0}
+  selectedAbility:
+    isTimeBased: 0
+    cost: 0
+  currentAbilityPoints: 0
+  isPerformingAbility: 0
+  isAbilityStarted: 0
 --- !u!143 &1327738630173977741
 CharacterController:
   m_ObjectHideFlags: 0

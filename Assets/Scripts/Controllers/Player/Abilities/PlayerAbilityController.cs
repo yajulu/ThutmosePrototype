@@ -5,113 +5,148 @@ using UnityEngine.InputSystem;
 
 namespace Controllers.Player.Abilities
 {
-    [RequireComponent(typeof(InputController))]
-    public class PlayerAbilityController : MonoBehaviour
-    {
-        [Header("Ability Settings")] [SerializeField]
-        private float maxAbilityPoints = 100;
-        
-        [Space(10), Header("Debug")]
-        [SerializeField, ReadOnly] private AbilityPerformerBase selected;
-        [SerializeField, ReadOnly] private Ability selectedAbility;
-        [SerializeField, ReadOnly] private float currentAbilityPoints;
-        [SerializeField, ReadOnly] private bool isPerformingAbility;
-        [SerializeField, ReadOnly] private bool isAbilityStarted;
+	[RequireComponent(typeof(InputController))]
+	public class PlayerAbilityController : MonoBehaviour
+	{
+		[Header("Ability Settings")] [SerializeField]
+		private float maxAbilityPoints = 100;
 
-        private InputController _inputController;
-        private void Awake()
-        {
-            _inputController = GetComponent<InputController>();
-        }
+		[SerializeField, Tooltip("The max distance at which the player can a activate an ability at.")]
+		private float maxActivationDistance = 10f;
 
-        private void Start()
-        {
-            selected = null;
-            currentAbilityPoints = maxAbilityPoints;
-        }
-        private void Update()
-        {
-            AbilityFinder();
-            AbilityHandler();
-        }
-        
-        private void AbilityFinder()
-        {
-            //Skip finder if we already performing an ability
-            if (isPerformingAbility)
-                return;
-            //Find abilities
+		[SerializeField, Tooltip("The layer for the ability affected objects.")]
+		private LayerMask abilityLayer;
 
-            if (selected != null)
-            {
-                selectedAbility = selected.Ability;
-            }
-        }
+		[SerializeField, Tooltip("The radius of the ability aiming beam.")]
+		private float abilityBeamRadius = 1f;
 
-        private void AbilityHandler()
-        {
-            switch (_inputController.performAbility)
-            {
-                case true when !isPerformingAbility:
-                {
-                    if (selected != null)
-                    {
-                        //Perform Ability Logic
-                        if (selectedAbility.Cost < currentAbilityPoints)
-                        {
-                            isPerformingAbility = true;
-                            selected.PerformAbility(OnAbilityStarted, OnAbilityCanceled);
-                        }
-                    }
-                    else
-                    {
-                        //Reset perform Ability Input
-                        _inputController.performAbility = false;
-                    }
+		[SerializeField, Tooltip("Aiming center")]
+		private Transform aimingCenter;
 
-                    break;
-                }
-                case true when isPerformingAbility && isAbilityStarted:
-                {
-                    currentAbilityPoints -= selectedAbility.Cost * Time.deltaTime;
+		[Space(10), Header("Debug")] [SerializeField, ReadOnly]
+		private AbilityPerformerBase selected;
 
-                    if (currentAbilityPoints <= 0)
-                    {
-                        selected.CancelAbility();
-                    }
-                    break;
-                }
-                case false when isPerformingAbility:
-                {
-                    if (selected != null)
-                    {
-                        selected.CancelAbility();
-                    }
+		[SerializeField, ReadOnly] private Ability selectedAbility;
+		[SerializeField, ReadOnly] private float currentAbilityPoints;
+		[SerializeField, ReadOnly] private bool isPerformingAbility;
+		[SerializeField, ReadOnly] private bool isAbilityStarted;
 
-                    break;
-                }
-            }
-        }
+		private InputController _inputController;
+		private CursorController _cursorController;
+		private RaycastHit _abilityBeamHit;
+		private Vector3 _abilityBeamDirection;
+		private Component _abilityPerformerComponent;
+		private void Awake()
+		{
+			_inputController = GetComponent<InputController>();
+		}
 
-        private void OnAbilityStarted()
-        {
-            if (!selectedAbility.IsTimeBased)
-            {
-                currentAbilityPoints -= selectedAbility.Cost;
-            }
-            else
-            {
-                isAbilityStarted = true;
-            }
-        }
-        private void OnAbilityCanceled(AbilityPerformerBase abilityPerformer)
-        {
-            // selectedAbilityPerformer.Canceled -= OnAbilityCanceled;
-            if (abilityPerformer.Ability.IsTimeBased)
-            {
-                isPerformingAbility = false;
-                selected = null;    
-            }
-        }
-    }
+		private void Start()
+		{
+			//Cache the cursor controller
+			_cursorController = CursorController.Instance;
+			selected = null;
+			currentAbilityPoints = maxAbilityPoints;
+		}
+
+		private void Update()
+		{
+			AbilityFinder();
+			AbilityHandler();
+		}
+
+		private void AbilityFinder()
+		{
+			//Skip finder if we already performing an ability
+			if (isPerformingAbility)
+				return;
+			var aimingCenterPosition = aimingCenter.position;
+
+			_abilityBeamDirection = _cursorController.CursorWorldPosition - aimingCenterPosition;
+			_abilityBeamDirection.z = 0;
+			
+			if (Physics.BoxCast(aimingCenterPosition, Vector3.one * abilityBeamRadius, _abilityBeamDirection, out _abilityBeamHit,
+				Quaternion.identity, maxActivationDistance, abilityLayer))
+			{
+				if (_abilityBeamHit.collider.gameObject.TryGetComponent(typeof(AbilityPerformerBase), out _abilityPerformerComponent))
+				{
+					selected = (AbilityPerformerBase)_abilityPerformerComponent;
+					selectedAbility = selected.Ability;	
+				}
+			}
+		}
+
+		private void AbilityHandler()
+		{
+			switch (_inputController.performAbility)
+			{
+				case true when !isPerformingAbility:
+				{
+					if (selected != null)
+					{
+						//Perform Ability Logic
+						if (selectedAbility.Cost < currentAbilityPoints)
+						{
+							isPerformingAbility = true;
+							selected.PerformAbility(OnAbilityStarted, OnAbilityCanceled);
+						}
+					}
+					else
+					{
+						//Reset perform Ability Input
+						_inputController.performAbility = false;
+					}
+
+					break;
+				}
+				case true when isPerformingAbility && isAbilityStarted:
+				{
+					currentAbilityPoints -= selectedAbility.Cost * Time.deltaTime;
+
+					if (currentAbilityPoints <= 0)
+					{
+						selected.CancelAbility();
+					}
+
+					break;
+				}
+				case false when isPerformingAbility:
+				{
+					if (selected != null)
+					{
+						selected.CancelAbility();
+					}
+
+					break;
+				}
+			}
+		}
+
+		private void OnAbilityStarted()
+		{
+			if (!selectedAbility.IsTimeBased)
+			{
+				currentAbilityPoints -= selectedAbility.Cost;
+			}
+			else
+			{
+				isAbilityStarted = true;
+			}
+		}
+
+		private void OnAbilityCanceled(AbilityPerformerBase abilityPerformer)
+		{
+			// selectedAbilityPerformer.Canceled -= OnAbilityCanceled;
+			if (abilityPerformer.Ability.IsTimeBased)
+			{
+				isPerformingAbility = false;
+				selected = null;
+			}
+		}
+
+		private void OnDrawGizmosSelected()
+		{
+			Gizmos.DrawRay(aimingCenter.position, _abilityBeamDirection);
+		}
+	}
 }

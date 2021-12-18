@@ -131,7 +131,7 @@ namespace Controllers.Player
 			_groundCheckRay.direction = -transform1.up;
 			if (Physics.SphereCast(_groundCheckRay, 0.3f, out _groundRaycastHit, 10f))
 			{
-				Debug.Log($"Jumping: {playerAltitude}");
+				// Debug.Log($"Jumping: {playerAltitude}");
 				playerAltitude = transform.position.y - _groundRaycastHit.point.y;
 			}
 		}
@@ -179,14 +179,14 @@ namespace Controllers.Player
 					.Lerp(transform.forward, cameraForward, deltaTime * rotationSpeed * _moveDirection.magnitude)
 					.ProjectOntoPlane(Vector3.up).normalized;
 			}
-
-			transform.rotation = Quaternion.LookRotation(_lookDirection, Vector3.up);
+			if(_lookDirection != Vector3.zero)
+				transform.rotation = Quaternion.LookRotation(_lookDirection, Vector3.up);
 
 			if (_controller.isGrounded)
 			{
 				if (_inputController.jump && !isJumping && (jumpCoolDownTimer <= 0 || bounceJumpsCounter > 0))
 				{
-					Debug.Log("Jump");
+					// Debug.Log("Jump");
 					isJumping = true;
 					
 					//Reset the jump input
