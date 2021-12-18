@@ -153,7 +153,7 @@ namespace Controllers.Player
 
 			if (input2D)
 			{
-				_moveDirection = Vector3.forward * _moveInput.x;
+				_moveDirection = Vector3.right * _moveInput.x;
 			}
 			else
 			{
@@ -169,7 +169,7 @@ namespace Controllers.Player
 			if (input2D)
 			{
 				_lookDirection = Vector3
-					.Lerp(transform.forward, _moveInput.x * Vector3.forward, deltaTime * rotationSpeed * 10)
+					.Lerp(transform.forward, _moveInput.x * Vector3.right, deltaTime * rotationSpeed * 10)
 					.ProjectOntoPlane(Vector3.up)
 					.normalized;
 			}
