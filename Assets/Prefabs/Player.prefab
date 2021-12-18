@@ -245,11 +245,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxAbilityPoints: 100
-  maxActivationDistance: 20
+  maxActivationDistance: 15
   abilityLayer:
     serializedVersion: 2
     m_Bits: 4096
-  abilityBeamRadius: 1
+  abilityBeamRadius: 0.25
   aimingCenter: {fileID: 1327738630450694607}
   selected: {fileID: 0}
   selectedAbility:
