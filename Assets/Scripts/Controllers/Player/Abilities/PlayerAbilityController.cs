@@ -85,7 +85,7 @@ namespace Controllers.Player.Abilities
 					if (selected != null)
 					{
 						//Perform Ability Logic
-						if (selectedAbility.Cost < currentAbilityPoints)
+						if ((selectedAbility.IsTimeBased ? selectedAbility.Cost * Time.deltaTime : selectedAbility.Cost ) < currentAbilityPoints)
 						{
 							isPerformingAbility = true;
 							selected.PerformAbility(OnAbilityStarted, OnAbilityCanceled);
@@ -105,6 +105,7 @@ namespace Controllers.Player.Abilities
 
 					if (currentAbilityPoints <= 0)
 					{
+						_inputController.performAbility = false;
 						selected.CancelAbility();
 					}
 
@@ -141,6 +142,7 @@ namespace Controllers.Player.Abilities
 			{
 				isPerformingAbility = false;
 				selected = null;
+				selectedAbility = null;
 			}
 		}
 

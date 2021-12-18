@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gravityAbility:
     isTimeBased: 1
-    cost: 1
+    cost: 20
   portalAbility:
     isTimeBased: 0
     cost: 10
